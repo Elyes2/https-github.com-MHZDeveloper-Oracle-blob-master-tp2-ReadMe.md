@@ -115,7 +115,7 @@ Autrement dit, le développeur déclare qu’une lecture va être suivie d’une
 
 ### Demo Niveau d'isolation  READ COMMITTED 
 
-| Timing | Session N° 1(User1)  | Session N° 2(User2) |Résultat | 
+| Timing | Session N° 1 | Session N° 2 | Résultat | 
 | :----: | :----: |:----:|:----:|
 | t0| ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` |||
 | t1 | ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|On va faire passer le salaire de l'employé 'Hichem' à 4000 à l'aide d'une requête UPDATE dans la session N°1(un lock sera ajouté sur cette ligne par Oracle)|
