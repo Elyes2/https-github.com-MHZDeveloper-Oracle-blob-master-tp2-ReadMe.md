@@ -118,11 +118,12 @@ Autrement dit, le développeur déclare qu’une lecture va être suivie d’une
 | Timing | Session N° 1  | Session N° 2 |Résultat | 
 | :----: | :----: |:----:|:----:|
 | t0| ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` |||
-| t1 | ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|------|
-| t2 | ------ |```SET TRANSACTION ISOLATION LEVEL READ COMMITTED;```|------|
-| t3 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|------|
-| t4 | ------ |```UPDATE EMP SET SAL = 3800 WHERE ENAME ='Mohamed';```|------|
-| t5 | ```Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,COMM,DEPTNO) values ('9999','Maaoui','Magician',null,to_date('17/02/2021','DD/MM/RR'),null,'10');``` |------|------|
+| t1 | ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|On va faire passer le salaire de l'employé 'Hichem' à 4000 à l'aide d'une requête UPDATE dans la session N°1(un lock sera ajouté sur cette ligne par Oracle)|
+| t2 | ------ |```SET TRANSACTION ISOLATION LEVEL READ COMMITTED;```|On va régler le niveau de la transaction sur READ COMMITTED dans la session N°2<br>
+<b>NB</b>:Cette instruction doit être réalisée pour chaque transaction.|
+| t3 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|On va obtenir le nom et le salaire des employés 'Mohamed' et 'Hichem' à partir de la table EMP dans la session N°2|
+| t4 | ------ |```UPDATE EMP SET SAL = 3800 WHERE ENAME ='Mohamed';```|A partir de la session N°2, le salaire de l'employé 'Mohamed va passer à 3800, avec cela un lock sera ajouté à la ligne mise à jour.|
+| t5 | ```Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,COMM,DEPTNO) values ('9999','Maaoui','Magician',null,to_date('17/02/2021','DD/MM/RR'),null,'10');``` |------|A partir de la session N°1,on va insérer dans la table EMP un nouvel employé ayant pour EMPNO(9999), pour ENAME('Maaoui'), pour JOB('Magician'), pour MGR(null) pour HIREDATE(17/02/2021), pour COMM(null) et pour DEPTNO(10)|
 | t6 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|------|
 | t7 | ------ |```UPDATE EMP SET SAL = 5000 WHERE ENAME ='Hichem';```|------|
 | t8 | ```Commit;``` |------|------|
