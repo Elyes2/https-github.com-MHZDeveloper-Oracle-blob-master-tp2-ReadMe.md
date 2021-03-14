@@ -119,7 +119,7 @@ Autrement dit, le développeur déclare qu’une lecture va être suivie d’une
 | :----: | :----: |:----:|:----:|
 | t0| ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` |||
 | t1 | ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|On va faire passer le salaire de l'employé 'Hichem' à 4000 à l'aide d'une requête UPDATE dans la session N°1(un lock sera ajouté sur cette ligne par Oracle)|
-| t2 | ------ |```SET TRANSACTION ISOLATION LEVEL READ COMMITTED;```|On va régler le niveau de la transaction sur READ COMMITTED dans la session N°2<br>
+| t2 | ------ |```SET TRANSACTION ISOLATION LEVEL READ COMMITTED;```|On va régler le niveau de la transaction sur READ COMMITTED dans la session N°2.
 <b>NB</b>:Cette instruction doit être réalisée pour chaque transaction.|
 | t3 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|On va obtenir le nom et le salaire des employés 'Mohamed' et 'Hichem' à partir de la table EMP dans la session N°2|
 | t4 | ------ |```UPDATE EMP SET SAL = 3800 WHERE ENAME ='Mohamed';```|A partir de la session N°2, le salaire de l'employé 'Mohamed va passer à 3800, avec cela un lock sera ajouté à la ligne mise à jour.|
