@@ -117,7 +117,7 @@ Autrement dit, le développeur déclare qu’une lecture va être suivie d’une
 
 | Timing | Session N° 1 | Session N° 2 | Résultat | 
 | :----: | :----: |:----:|:----:|
-| t0| ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` |||
+| t0 | ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` |||
 | t1 | ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|On va faire passer le salaire de l'employé 'Hichem' à 4000 à l'aide d'une requête UPDATE dans la session N°1(un lock sera ajouté sur cette ligne par Oracle)|
 | t2 | ------ |```SET TRANSACTION ISOLATION LEVEL READ COMMITTED;```|On va régler le niveau de la transaction sur READ COMMITTED dans la session N°2.**NB**:Cette instruction doit être réalisée pour chaque transaction.|
 | t3 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|On va obtenir le nom et le salaire des employés 'Mohamed' et 'Hichem' à partir de la table EMP dans la session N°2|
@@ -126,9 +126,9 @@ Autrement dit, le développeur déclare qu’une lecture va être suivie d’une
 | t6 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|On va afficher les noms et les salaires des employés 'Mohamed','Hichem et 'Maaoui' à partir de la session N°2|
 | t7 | ------ |```UPDATE EMP SET SAL = 5000 WHERE ENAME ='Hichem';```|Puisqu'il existe un lock sur la ligne concernant l'employé 'Hichem' car une requête UPDATE a été réalisée dans la session N°1(t1) donc la session N°2 va rester en attente.|
 | t8 | ```Commit;``` |------|En réalisant le COMMIT dans la session N°1, la transaction va être validée et le lock ur la ligne concernant l'employé Hichem sera levé et donc la requête UPDATE réalisée dans la session N°2 va être effectuée(le message 1 row updated sera affiché).|
-| t9 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|On va afficher à l'aide de la requête le nom et les salaires des employés Hichem Mohamed et Maaoui dans la session N°1.|
-| t10| ------ |```COMMIT;```|On va réaliser un COMMIT ainsi, les verrous sur les lignes concernant les employés 'Hichem' et 'Mohamed' seront levés.|
-| t11| ```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|------|On va afficher encore une fois les salaires et les noms des employés 'Hichem','Mohamed' et 'Maaoui' dans la session N°1(On va obtenir un résultat correct car le COMMIT réalisé dans t10 a permis de lever les verrous sur les différentes lignes sur lesquelles on a effectué une mise à jour et donc les modifications seront conservées).|
+| t9 | ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|On va afficher à l'aide de la requête le nom et les salaires des employés 'Hichem' 'Mohamed' et 'Maaoui' dans la session N°1.|
+| t10 | ------ |```COMMIT;```|On va réaliser un COMMIT ainsi, les verrous sur les lignes concernant les employés 'Hichem' et 'Mohamed' seront levés.|
+| t11 | ```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|------|On va afficher encore une fois les salaires et les noms des employés 'Hichem','Mohamed' et 'Maaoui' dans la session N°1(On va obtenir un résultat correct car le COMMIT réalisé dans t10 a permis de lever les verrous sur les différentes lignes sur lesquelles on a effectué une mise à jour et donc les modifications seront conservées).|
 
 
 
