@@ -138,29 +138,29 @@ Autrement dit, le développeur déclare qu’une lecture va être suivie d’une
 | Timing | Session N° 1  | Session N° 2 |Résultat | 
 | :----: | :----: |:----:|:----:|
 | t0| ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` |||
-| t1| ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|------|
-| t2| ------ |```SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;```|------|
-| t3| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|------|
-| t4| ------ |```UPDATE EMP SET SAL = 3800 WHERE ENAME ='Mohamed';```|------|
-| t5| ```Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,COMM,DEPTNO) values ('9999','Maaoui','Magician',null,to_date('17/02/2021','DD/MM/RR'),null,'10');``` |------|------|
-| t6| ```COMMIT;```|------ |------|
-| t7|```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```| ------ |------|
-| t8| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|------|
-| t9| ```Commit;``` |------|------|
-| t10|```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```| ------ |------|
-| t11| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|------|
-| t12| ------ | ```COMMIT;```|------|
-| t13| ``` UPDATE EMP SET SAL = 5000 WHERE ENAME ='Maaoui'; ``` |------|------|
-| t14| ------ |```SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;```|------|
-| t15| ------ |```UPDATE EMP SET SAL = 5200 WHERE ENAME ='Maaoui';```|------|
-| t16| ```COMMIT;``` |------|------|
-| t17| ------ |```ROLLBACK;```|------|
-| t18| ------ |```SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;```|------|
-| t19| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|------|
-| t20| ``` UPDATE EMP SET SAL = 5200 WHERE ENAME ='Maaoui'; ``` |------|------|
-| t21| ```COMMIT;``` |------|------|
-| t22| ------ | ```COMMIT;```|------|
-| t23| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|------|
+| t1| ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|On va modifier le salaire de l'employé 'Hichem' à 4000 dans la session N°1 à l'aide d'une requête UPDATE.|
+| t2| ------ |```SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;```|On va régler le niveau de la transaction sur Serializable dans la session N°2.|
+| t3| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|On va afficher le nom et le salaire des employés 'Hichem' et 'Mohamed' dans la session N°2.|
+| t4| ------ |```UPDATE EMP SET SAL = 3800 WHERE ENAME ='Mohamed';```|En exécutant la requête UPDATE dans la session N°2, une copie de la base de données sera créée dans le cache d'Oracle.La requête UPDATE sera réalisée sur cette copie(Le salaire de l'employé Hichem passe à 3800).|
+| t5| ```Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,COMM,DEPTNO) values ('9999','Maaoui','Magician',null,to_date('17/02/2021','DD/MM/RR'),null,'10');``` |------|On va réaliser l'insertion d'une ligne dans la table EMP à partir de la session N°1|
+| t6| ```COMMIT;```|------ |On valide la transaction dans la session N°1 à l'aide de l'instruction COMMIT(Les modifications réalisées sur la base de données sont sauvegardées).|
+| t7|```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```| ------ |On va afficher les noms et les salaires des employés 'Hichem', 'Mohamed' et 'Maaoui' dans la session N°1.|
+| t8| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|On va afficher maintenant les noms et les salaires des employés 'Hichem', 'Mohamed' et 'Maaoui' (dans la session N°2) qui seront similaires à ceux affichés dans la session N°1 car l'ordre COMMIT dans t6 a validé la transaction.|
+| t9| ```Commit;``` |------|On va valider la transaction à l'aide d'un COMMIT dans la session N°1|
+| t10|```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```| ------ |On va afficher dans la session N°1 les noms et les salaires des employés 'Hichem', 'Mohamed' et 'Maaoui'(Il n'y aura pas de modification lors de l'affichage par rapport au dernier ordre select).|
+| t11| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|A l'aide d'un select dans la session N°2, on va effectuer la sélection des noms et des salaires tel que les noms des employés sont 'Hichem' , 'Mohamed' et 'Maaoui'.|
+| t12| ------ | ```COMMIT;```|On va valider la transaction (serializable) dans la session N°2.|
+| t13| ``` UPDATE EMP SET SAL = 5000 WHERE ENAME ='Maaoui'; ``` |------|On va modifier le salaire de l'employé 'Maaoui' à 5000 dans la session N°1. Après l'éxecution de la requête update relative au changement du salaire de l'employé 'Maaoui', un lock va être ajouté à sa ligne|
+| t14| ------ |```SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;```|On va régler la  transaction sur le niveau serializable dans la session N°2|
+| t15| ------ |```UPDATE EMP SET SAL = 5200 WHERE ENAME ='Maaoui';```|On va tenter de modifier le salaire de l'employé 'Maaoui' à 5200 dans la session N°2. La session N°2 va détecter l'interblocage ( le niveau de la transaction est serializable et la base a été copiée dans le cache avec le lock car dans t13, on a réalisé une requête sur l'employé 'Maaoui' dans il y aura un lock dans la base sur la ligne le concernant).|
+| t16| ```COMMIT;``` |------|On valide la transaction dans la session N°1 à l'aide d'un commit afin de lever le lock.|
+| t17| ------ |```ROLLBACK;```|On effectue un rollback dans la session N°2 afin d'annuler les modifications réalisées( la base copiée dans le cache Oracle contient un lock sur la ligne de l'employé 'Maaoui', donc on ne pourra pas modifier les données de cet employé car en réalisant un commit pour valider la transaction dans la session N°1, le lock sur la copie de la base persistera mais , il sera levé dans la base réelle.|
+| t18| ------ |```SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;```|On va régler encore une fois le niveau de la transaction sur serializable dans la session N°2.|
+| t19| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|A l'aide d'une requête select, on affiche les noms et les salaires des employés 'Hichem' , 'Mohamed' et 'Maaoui'.|
+| t20| ``` UPDATE EMP SET SAL = 5200 WHERE ENAME ='Maaoui'; ``` |------|Le salaire de l'employé 'Maaoui' est mis à jour (Son salaire passe à 5200) à l'aide de la requête UPDATE réalisée dans la session N°1.|
+| t21| ```COMMIT;``` |------|On va réaliser un COMMIT afin de terminer la transaction et lever les locks sur la ligne de l'employé 'Maaoui'. Ainsi quand il y aura copie de la base grâce au niveau de la transaction Serializable , elle ne contiendra aucun lock et les requêtes UPDATE dans la session N°2 seront effectués avec succès sur l'ensemble de la base.|
+| t22| ------ | ```COMMIT;```|On exécute un COMMIT dans la session N°2 afin de valider la transaction ayant le niveau Serializable et ainsi les données stockées dans la copie de la base(dans le cache Oracle) vont être chargées dans la base réelle|
+| t23| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem', 'Maaoui');```|On va afficher dans la session N°2 les noms et les nouvelles valeurs des salaires des employés 'Mohamed','Hichem' et 'Maaoui' après la validation de la transaction dans t21 et t22.|
 
 
 
