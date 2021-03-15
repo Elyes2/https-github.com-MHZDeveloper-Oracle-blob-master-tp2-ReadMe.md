@@ -83,7 +83,7 @@ Biensûr, lorsqu'on parle de gestion de conccurence entre plusieurs transactions
 
 | Timing | Session N° 1 (User1)   | Session N° 2 (User2) |Résultat | 
 | :----: | :----: |:----:|:----:|
-| t0 | ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` ||On obtient les noms et les salaires des employés 'Mohamed' et 'Hichem'<br>.Mohamed:2000 et Hichem:2800|
+| t0 | ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` ||On obtient les noms et les salaires des employés 'Mohamed' et 'Hichem'.<br>Mohamed:2000 et Hichem:2800|
 | t1 | ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|On va réaliser dans la session N°1 , une modification du salaire de l'employé 'Hichem' qui va passer de 2800 à 4000. Un lock sera ajouté par Oracle sur la ligne après avoir exécuté la requête UPDATE|
 | t2 | ------ |```UPDATE EMP SET SAL = SAL + 1000 WHERE ENAME ='Mohamed';```|On va réaliser une modification dans la session N°2 sur le salaire de l'employé 'Mohamed'. On va ajouter 1000 à son salaire (Son salaire sera égal à 3000).Après la réalisation de cette requête UPDATE, un lock sera ajouté à la ligne modifiée.|
 | t3 | ```UPDATE EMP SET SAL = SAL + 1000 WHERE ENAME ='Mohamed';```| ------ |Puisqu'il existe un lock sur la ligne concernant l'employé 'Mohamed'(réalisé à partir de la session N°2 à l'aide de la requête UPDATE),la session N°1 va rester en attente jusqu'à ce que q'un COMMIT soit exécuté dans la session N°2 afin que le lock soit levé et ainsi une modification pourra être réalisée par le User1 relatif à la session N°1 sur les données correspondantes à l'employé 'Mohamed'|
