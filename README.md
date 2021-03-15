@@ -137,10 +137,10 @@ Autrement dit, le développeur déclare qu’une lecture va être suivie d’une
 
 | Timing | Session N° 1  | Session N° 2 |Résultat | 
 | :----: | :----: |:----:|:----:|
-| t0| ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` |||
+| t0| ``` SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');``` ||On obtient les noms et les salaires des employés 'Mohamed' et 'Hichem'.<br>Mohamed:2000 et Hichem:2800|
 | t1| ``` UPDATE EMP SET SAL = 4000 WHERE ENAME ='Hichem'; ``` |------|On va modifier le salaire de l'employé 'Hichem' à 4000 dans la session N°1 à l'aide d'une requête UPDATE.|
 | t2| ------ |```SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;```|On va régler le niveau de la transaction sur Serializable dans la session N°2.|
-| t3| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|On va afficher le nom et le salaire des employés 'Hichem' et 'Mohamed' dans la session N°2.|
+| t3| ------ |```SELECT ENAME, SAL FROM EMP WHERE ENAME IN ('Mohamed','Hichem');```|On va afficher le nom et le salaire des employés 'Hichem' et 'Mohamed' dans la session N°2. Le salaire de l'employé 'Hichem' ne passe pas à 4000 grâce à la requête UPDATE réalisée en t1(à partir de la session N°1) car il y a un lock sur la ligne concernant l'employé 'Hichem' et il n'y a pas eu de COMMIT afin d'obtenir de lever le lock.<br>Mohamed:2000 et Hichem:2800|
 | t4| ------ |```UPDATE EMP SET SAL = 3800 WHERE ENAME ='Mohamed';```|En exécutant la requête UPDATE dans la session N°2, une copie de la base de données sera créée dans le cache d'Oracle.La requête UPDATE sera réalisée sur cette copie(Le salaire de l'employé Hichem passe à 3800).|
 | t5| ```Insert into EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,COMM,DEPTNO) values ('9999','Maaoui','Magician',null,to_date('17/02/2021','DD/MM/RR'),null,'10');``` |------|On va réaliser l'insertion d'une ligne dans la table EMP à partir de la session N°1|
 | t6| ```COMMIT;```|------ |On valide la transaction dans la session N°1 à l'aide de l'instruction COMMIT(Les modifications réalisées sur la base de données sont sauvegardées).|
